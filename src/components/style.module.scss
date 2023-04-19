@@ -1,0 +1,151 @@
+:root {
+  --color-main: #2f83f1;
+  --color-active: #5198f6;
+}
+
+.todo {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  &__wrap {
+    display: flex;
+    position: relative;
+  }
+
+  &__title {
+    text-align: center;
+  }
+
+  &__formWrap {
+    margin-bottom: 20px;
+    display: flex;
+  }
+
+  &__add {
+    background-color: var(--color-main);
+    border: none;
+    width: 36px;
+    height: 36px;
+    color: white;
+    font-size: 26px;
+
+    &:hover {
+      background-color: var(--color-active);
+    }
+  }
+
+  &__input {
+    width: 350px;
+    height: 30px;
+    border: 2px solid var(--color-active);
+    margin-right: 5px;
+    font-size: 16px;
+  }
+
+  &__checkbox {
+    margin-left: 10px;
+    margin-right: 10px;
+    cursor: pointer;
+    width: 16px;
+    height: 16px;
+  }
+
+  &__task {
+    display: flex;
+    background-color: #dae8febd;
+    height: 40px;
+    width: 400px;
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid var(--color-main);
+    color: var(--color-main);
+    font-size: 20px;
+
+    &_complete {
+      text-decoration: line-through;
+      background-color: #dae8fe39;
+    }
+  }
+
+  &__taskEdit {
+    display: flex;
+    background-color: #dae8febd;
+    height: 40px;
+    width: 362px;
+    align-items: center;
+    border: none;
+    color: var(--color-main);
+    border-bottom: 1px solid var(--color-main);
+    font-size: 20px;
+    padding-left: 36px;
+  }
+
+  &__del {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    border: 2px solid var(--color-active);
+    border-radius: 10px;
+    width: 30px;
+    height: 20px;
+    text-align: center;
+
+    &:hover {
+      color: var(--color-active);
+      cursor: pointer;
+    }
+  }
+
+  &__delAll {
+    background-color: var(--color-main);
+    border: none;
+    height: 36px;
+    color: white;
+    font-size: 20px;
+    width: 180px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: auto;
+
+    &:hover {
+      background-color: var(--color-active);
+    }
+  }
+
+  &__btnEdit {
+    position: absolute;
+    right: 50px;
+    top: 10px;
+    border: 2px solid var(--color-active);
+    border-radius: 10px;
+    width: 50px;
+    height: 20px;
+    text-align: center;
+
+    &:hover {
+      color: var(--color-active);
+      cursor: pointer;
+    }
+  }
+
+  &__btnApply {
+    position: absolute;
+    right: 110px;
+    top: 10px;
+    border: 2px solid var(--color-active);
+    border-radius: 10px;
+    width: 50px;
+    height: 24px;
+    text-align: center;
+    background: none;
+
+    &:hover {
+      color: var(--color-active);
+      cursor: pointer;
+    }
+  }
+}
