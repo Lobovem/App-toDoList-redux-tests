@@ -1,3 +1,5 @@
+import { click } from '@testing-library/user-event/dist/click';
+
 const defaultState = {
   todoListState: JSON.parse(localStorage.getItem('tasks')) || [],
   inputState: '',
