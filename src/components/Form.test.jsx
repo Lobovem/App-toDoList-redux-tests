@@ -91,6 +91,4 @@ describe('Form', () => {
 
     expect(input.value).toBe('todo one');
   });
-
-  //TODO Check this test that it added todo
 });

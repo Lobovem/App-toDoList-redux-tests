@@ -6,14 +6,15 @@ export function Todo({ myTask }) {
 
   return (
     <div className={s.todo__wrap}>
-      <button
+      <div
+        role="button"
         className={s.todo__btnEdit}
         onClick={() => {
           dispatch({ type: 'SET_CHANGE_EDIT_MODE', payload: myTask });
         }}
       >
         Edit
-      </button>
+      </div>
 
       {myTask.isEditing && (
         <form
@@ -47,7 +48,7 @@ export function Todo({ myTask }) {
         </div>
       )}
 
-      <div className={s.todo__del} onClick={() => dispatch({ type: 'DELETE_TODO', payload: myTask })}>
+      <div role="button" className={s.todo__del} onClick={() => dispatch({ type: 'DELETE_TODO', payload: myTask })}>
         X
       </div>
     </div>
