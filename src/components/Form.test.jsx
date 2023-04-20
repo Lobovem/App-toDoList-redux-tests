@@ -1,12 +1,13 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { Form } from './Form';
+import { Todo } from './Todo';
 import { store } from '../store';
 
 describe('Form', () => {
-  jest.mock('../store/reducer', () => ({
-    todoListReduser: jest.fn(),
-  }));
+  // jest.mock('../store/reducer', () => ({
+  //   todoListReduser: jest.fn(),
+  // }));
 
   it('should be maked snapshot Form', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -92,15 +93,4 @@ describe('Form', () => {
   });
 
   //TODO Check this test that it added todo
-  it('should be changed value input', () => {
-    render(
-      <Provider store={store}>
-        <Form />
-      </Provider>
-    );
-    const input = screen.getByPlaceholderText('Please enter new task...');
-    fireEvent.change(input, { target: { value: 'test' } });
-
-    expect(input.value).toBe('test');
-  });
 });

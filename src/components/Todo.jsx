@@ -6,14 +6,14 @@ export function Todo({ myTask }) {
 
   return (
     <div className={s.todo__wrap}>
-      <div
+      <button
         className={s.todo__btnEdit}
         onClick={() => {
           dispatch({ type: 'SET_CHANGE_EDIT_MODE', payload: myTask });
         }}
       >
         Edit
-      </div>
+      </button>
 
       {myTask.isEditing && (
         <form
