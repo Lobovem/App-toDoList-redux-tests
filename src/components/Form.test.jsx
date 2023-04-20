@@ -90,18 +90,17 @@ describe('Form', () => {
 
     expect(input.value).toBe('todo one');
   });
-});
 
-//TODO Check this test that it added todo
-it('should be added todo', () => {
-  render(
-    <Provider store={store}>
-      <Form />
-    </Provider>
-  );
-  const input = screen.getByPlaceholderText('Please enter new task...');
-  // input.value = 'todo one';
-  fireEvent.change(input, { target: { value: 'test' } });
+  //TODO Check this test that it added todo
+  it('should be changed value input', () => {
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
+    const input = screen.getByPlaceholderText('Please enter new task...');
+    fireEvent.change(input, { target: { value: 'test' } });
 
-  expect(input.value).toBe('test');
+    expect(input.value).toBe('test');
+  });
 });

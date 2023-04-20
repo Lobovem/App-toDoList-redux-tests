@@ -3,6 +3,7 @@ import { Form } from './components/Form';
 import { Todo } from './components/Todo';
 import { useSelector } from 'react-redux';
 import s from './components/style.module.scss';
+import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 
 function App() {
   const todoList = useSelector((state) => state.todoListReduser.todoListState);
@@ -12,14 +13,16 @@ function App() {
   }, [todoList]);
 
   return (
-    <div className={s.todo}>
-      <h1 className={s.todo__title}>{`Count all tasks - ${todoList.length}`}</h1>
+    <ErrorBoundary>
+      <div className={s.todo}>
+        <h1 className={s.todo__title}>{`Count all tasks - ${todoList.length}`}</h1>
 
-      <Form />
-      {todoList.map((myTask) => {
-        return <Todo key={myTask.id} myTask={myTask} />;
-      })}
-    </div>
+        <Form />
+        {todoList.map((myTask) => {
+          return <Todo key={myTask.id} myTask={myTask} />;
+        })}
+      </div>
+    </ErrorBoundary>
   );
 }
 
