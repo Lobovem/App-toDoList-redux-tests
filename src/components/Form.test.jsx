@@ -1,9 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { Form } from './Form';
 import { store } from '../store';
 
 describe('Form', () => {
+  jest.mock('../store/reducer', () => ({
+    todoListReduser: jest.fn(),
+  }));
+
   it('should be maked snapshot Form', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
@@ -21,7 +25,7 @@ describe('Form', () => {
         <Form />
       </Provider>
     );
-    const btn = screen.getByText('Remove checked');
+    const btn = screen.getByRole('button', { name: 'Remove checked' });
 
     expect(btn).toBeInTheDocument();
   });
@@ -36,7 +40,7 @@ describe('Form', () => {
       </Provider>
     );
 
-    const btn = screen.getByText('Remove checked');
+    const btn = screen.getByRole('button', { name: 'Remove checked' });
     handleClick(btn);
 
     expect(handleClick).toHaveBeenCalledTimes(1);
@@ -48,7 +52,7 @@ describe('Form', () => {
         <Form />
       </Provider>
     );
-    const btn = screen.getByText('+');
+    const btn = screen.getByRole('button', { name: '+' });
 
     expect(btn).toBeInTheDocument();
   });
@@ -82,8 +86,22 @@ describe('Form', () => {
       </Provider>
     );
     const input = screen.getByPlaceholderText('Please enter new task...');
-    input.value = 'todo one';
+    fireEvent.change(input, { target: { value: 'todo one' } });
 
     expect(input.value).toBe('todo one');
   });
+});
+
+//TODO Check this test that it added todo
+it('should be added todo', () => {
+  render(
+    <Provider store={store}>
+      <Form />
+    </Provider>
+  );
+  const input = screen.getByPlaceholderText('Please enter new task...');
+  // input.value = 'todo one';
+  fireEvent.change(input, { target: { value: 'test' } });
+
+  expect(input.value).toBe('test');
 });
