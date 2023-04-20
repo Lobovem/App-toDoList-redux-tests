@@ -3,12 +3,10 @@ import { Provider } from 'react-redux';
 import { Form } from './Form';
 import { Todo } from './Todo';
 import { store } from '../store';
+import myTask from '../App';
+import App from '../App';
 
 describe('Form', () => {
-  // jest.mock('../store/reducer', () => ({
-  //   todoListReduser: jest.fn(),
-  // }));
-
   it('should be maked snapshot Form', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
@@ -90,5 +88,26 @@ describe('Form', () => {
     fireEvent.change(input, { target: { value: 'todo one' } });
 
     expect(input.value).toBe('todo one');
+  });
+
+  it('should be added new todo item to the list', () => {
+    render(
+      <Provider store={store}>
+        <App>
+          <Form />
+          <Todo myTask={myTask} />
+        </App>
+      </Provider>
+    );
+
+    const input = screen.getByPlaceholderText('Please enter new task...');
+    fireEvent.change(input, { target: { value: 'new todo' } });
+
+    const btn = screen.getByRole('button', { name: '+' });
+    fireEvent.click(btn);
+
+    const newTodo = screen.getByText('new todo');
+
+    expect(newTodo).toBeInTheDocument();
   });
 });

@@ -1,18 +1,13 @@
 import { Provider } from 'react-redux';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Todo } from './Todo';
+import { Form } from './Form';
 import { store } from '../store';
 import myTask from '../App';
-import { Form } from './Form';
-import configureStore from 'redux-mock-store';
+import React from 'react';
+import App from '../App';
 
 describe('TodoList', () => {
-  const todo = {
-    id: '1',
-    task: 'test',
-    complete: false,
-    isEditing: false,
-  };
   it('should be maked snapshop Todo', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
@@ -49,35 +44,4 @@ describe('TodoList', () => {
 
     expect(btn).toBeInTheDocument();
   });
-
-  // it('should be added todo to list', () => {
-  //   const mockStore = configureStore();
-  //   const initialState = {
-  //     todos: [],
-  //   };
-  //   const store = mockStore(initialState);
-  //   // eslint-disable-next-line testing-library/render-result-naming-convention
-  //   render(
-  //     <Provider store={store}>
-  //       <Form />
-  //       <Todo myTask={myTask} />
-  //     </Provider>
-  //   );
-
-  //   const input = screen.getByPlaceholderText('Please enter new task...');
-
-  //   fireEvent.change(input, { target: { value: 'test' } });
-
-  //   const btn = screen.getByRole('button', { name: '+' });
-  //   fireEvent.click(btn);
-
-  //   const actions = store.getActions();
-
-  //   expect(actions).toEqual([{ type: 'ADD_TODO', payload: { id: 1, text: 'Новая задача' } }]);
-
-  //   const newTodo = screen.getByText('test');
-
-  //   expect(newTodo).toBeInTheDocument();
-  //   // expect(input.value).toBe('test');
-  // });
 });
