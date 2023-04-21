@@ -1,6 +1,9 @@
-import { combineReducers, createStore } from 'redux';
-import { todoListReduser } from './reducer';
-import { composeWithDevTools } from 'redux-devtools-extension';
+// import configureStore from '@reduxjs/toolkit';
+import { configureStore } from '@reduxjs/toolkit';
+import counterSlice from './slices/counterSlice';
 
-const rootReducer = combineReducers({ todoListReduser: todoListReduser });
-export const store = createStore(rootReducer, composeWithDevTools());
+export const store = configureStore({
+  reducer: {
+    counter: counterSlice,
+  },
+});
