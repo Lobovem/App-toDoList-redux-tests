@@ -1,14 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { useDispatch, useSelector } from 'react-redux';
-
+import { useDispatch } from 'react-redux';
 import { Provider } from 'react-redux';
 import { Form } from './Form';
-import { Todo } from './Todo';
 import { store } from '../store';
-import myTask from '../App';
-import App from '../App';
-import * as reduxHooks from 'react-redux';
-import * as actions from '../store/reducer';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -16,21 +10,10 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-let MyTask = [
-  {
-    id: 1,
-    task: 'todo one',
-    complete: false,
-    isEditing: false,
-  },
-];
-
 const dispatch = jest.fn();
 
-const mockUseSelector = jest.spyOn(reduxHooks, 'useSelector');
-const mockUseDispatch = jest.spyOn(reduxHooks, 'useDispatch');
-
 describe('Form', () => {
+  //snapshot component
   it('should be maked snapshot Form', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
@@ -42,6 +25,7 @@ describe('Form', () => {
     expect(component).toMatchSnapshot();
   });
 
+  //search input
   it('should search input', () => {
     render(
       <Provider store={store}>
@@ -52,6 +36,7 @@ describe('Form', () => {
     expect(input).toBeInTheDocument();
   });
 
+  //empty input
   it('should be empty data in input', () => {
     render(
       <Provider store={store}>
@@ -63,6 +48,7 @@ describe('Form', () => {
     expect(input.value).toBe('');
   });
 
+  //fill input
   it('should be filled text of "todo one" in input', () => {
     useDispatch.mockReturnValue(dispatch);
 
@@ -77,6 +63,7 @@ describe('Form', () => {
     expect(input.value).toBe('todo one');
   });
 
+  //search button add
   it('should search button of add todo', () => {
     render(
       <Provider store={store}>
@@ -88,7 +75,7 @@ describe('Form', () => {
     expect(btn).toBeInTheDocument();
   });
 
-  //onsubmit
+  //onclick onsubmit
   it('should be click onSubmit', () => {
     useDispatch.mockReturnValue(dispatch);
     const handleSubmit = jest.fn();
@@ -121,6 +108,7 @@ describe('Form', () => {
     expect(btn).toBeInTheDocument();
   });
 
+  //onclick remove checked
   it('should be one click button of Remove checked', () => {
     const handleClick = jest.fn();
 
@@ -135,52 +123,24 @@ describe('Form', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  //check submit
-  // it('should be called dispatch with ADD_TODO', () => {
-  //   useDispatch.mockReturnValue(dispatch);
+  // check (click) submit
+  it('should be called dispatch with ADD_TODO', () => {
+    useDispatch.mockReturnValue(dispatch);
 
-  //   render(
-  //     <Provider store={store}>
-  //       <Form />
-  //     </Provider>
-  //   );
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
 
-  //   const input = screen.getByPlaceholderText('Please enter new task...');
-  //   fireEvent.change(input, { target: { value: 'todo two' } });
+    const input = screen.getByPlaceholderText('Please enter new task...');
+    fireEvent.change(input, { target: { value: 'todo two' } });
 
-  //   const btn = screen.getByRole('button', { name: '+' });
-  //   fireEvent.click(btn);
+    expect(input.value).toBe('todo two');
 
-  //   expect(dispatch).toHaveBeenCalledWith({ type: 'ADD_TODO', payload: 'todo two' });
-  //   expect(dispatch).toHaveBeenCalledWith({ type: 'INPUT_CHANGE', payload: '' });
-  // });
+    const btn = screen.getByRole('button', { name: '+' });
+    dispatch(btn);
 
-  // it('should be added new todo item to the list', () => {
-  //   // mockUseSelector.mockReturnValue(myTask);
-
-  //   let myTask = [
-  //     {
-  //       id: 1,
-  //       task: 'todo one',
-  //       complete: false,
-  //       isEditing: false,
-  //     },
-  //   ];
-
-  //   render(
-  //     <Provider store={store}>
-  //       <App>{/* <Form myTask={myTask}></Form> */}</App>
-  //     </Provider>
-  //   );
-
-  //   const input = screen.getByPlaceholderText('Please enter new task...');
-  //   fireEvent.change(input, { target: { value: 'new todo' } });
-
-  //   const btn = screen.getByRole('button', { name: '+' });
-  //   fireEvent.click(btn);
-
-  //   const newTodo = screen.getByText('new todo');
-
-  //   expect(newTodo).toBeInTheDocument();
-  // });
+    expect(dispatch).toHaveBeenCalledTimes(2);
+  });
 });

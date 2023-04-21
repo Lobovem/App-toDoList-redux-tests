@@ -1,33 +1,16 @@
 import { Provider } from 'react-redux';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Todo } from './Todo';
-import { Form } from './Form';
 import { store } from '../store';
 import myTask from '../App';
 import React from 'react';
-import App from '../App';
-import * as reduxHooks from 'react-redux';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
-  useSelector: jest.fn(),
 }));
 
-let todo = [
-  {
-    id: 1,
-    task: 'todo one',
-    complete: false,
-    isEditing: false,
-  },
-];
-
 const dispatch = jest.fn();
-const useSel = jest.fn();
-
-const mockUseSelector = jest.spyOn(reduxHooks, 'useSelector');
-const mockUseDispatch = jest.spyOn(reduxHooks, 'useDispatch');
 
 describe('TodoList', () => {
   //snapshot component
@@ -70,8 +53,6 @@ describe('TodoList', () => {
 
   //delete todo
   it('should be deleted todo after press btn delete', () => {
-    const dispatch = jest.fn();
-
     const todo = {
       id: 1,
       task: 'todo one',
@@ -130,13 +111,10 @@ describe('TodoList', () => {
     });
   });
 
-  it('should be checked checkbox', () => {
-    const todo = {
-      id: 1,
-      task: 'todo one',
-      complete: false,
-      isEditing: true,
-    };
+  //complete todo
+  it('should be complete todo', () => {
+    const onClick = jest.fn();
+    const todo = { id: 1, task: 'todo', complete: true, isEditing: false };
 
     render(
       <Provider store={store}>
@@ -147,7 +125,27 @@ describe('TodoList', () => {
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toBeInTheDocument();
 
-    // fireEvent.click(checkbox);
-    // expect(checkbox.checked).toBe(true);
+    onClick(checkbox);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(checkbox).toBeChecked();
+  });
+
+  //not complete todo
+  it('should be not complete todo', () => {
+    const onClick = jest.fn();
+    const todo = { id: 1, task: 'todo', complete: false, isEditing: false };
+
+    render(
+      <Provider store={store}>
+        <Todo myTask={todo} />
+      </Provider>
+    );
+
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeInTheDocument();
+
+    onClick(checkbox);
+    expect(onClick).toHaveBeenCalledTimes(1);
+    expect(checkbox).not.toBeChecked();
   });
 });
