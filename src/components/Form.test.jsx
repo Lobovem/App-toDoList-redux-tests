@@ -10,9 +10,13 @@ import App from '../App';
 import * as reduxHooks from 'react-redux';
 import * as actions from '../store/reducer';
 
-jest.mock('react-redux');
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
 
-let todos = [
+let MyTask = [
   {
     id: 1,
     task: 'todo one',
@@ -21,38 +25,30 @@ let todos = [
   },
 ];
 
+const dispatch = jest.fn();
+const useSel = jest.fn();
+
 const mockUseSelector = jest.spyOn(reduxHooks, 'useSelector');
 const mockUseDispatch = jest.spyOn(reduxHooks, 'useDispatch');
 
 describe('Form', () => {
-  it('should be maked snapshot Form ', () => {
-    mockUseSelector.mockReturnValue([]);
+  it('should be maked snapshot Form', () => {
+    // mockUseSelector.mockReturnValue([]);
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
-      // <Provider store={store}>
-      <Form />
-      // </Provider>
+      <Provider store={store}>
+        <Form />
+      </Provider>
     );
 
     expect(component).toMatchSnapshot();
   });
 
-  // it('should be maked snapshot Form', () => {
-  //   // eslint-disable-next-line testing-library/render-result-naming-convention
-  //   const component = render(
-  //     <Provider store={store}>
-  //       <Form />
-  //     </Provider>
-  //   );
-
-  //   expect(component).toMatchSnapshot();
-  // });
-
   it('should search button of Remove checked', () => {
     render(
-      // <Provider store={store}>
-      <Form />
-      // </Provider>
+      <Provider store={store}>
+        <Form />
+      </Provider>
     );
     const btn = screen.getByRole('button', { name: 'Remove checked' });
 
@@ -64,9 +60,9 @@ describe('Form', () => {
     const handleClick = jest.fn();
 
     render(
-      // <Provider store={store}>
-      <Form onClick={handleClick} />
-      // </Provider>
+      <Provider store={store}>
+        <Form onClick={handleClick} />
+      </Provider>
     );
 
     const btn = screen.getByRole('button', { name: 'Remove checked' });
@@ -77,9 +73,9 @@ describe('Form', () => {
 
   it('should search button of add todo', () => {
     render(
-      // <Provider store={store}>
-      <Form />
-      // </Provider>
+      <Provider store={store}>
+        <Form />
+      </Provider>
     );
     const btn = screen.getByRole('button', { name: '+' });
 
@@ -88,10 +84,11 @@ describe('Form', () => {
 
   it('should search input', () => {
     render(
-      // <Provider store={store}>
-      <Form />
-      // </Provider>
+      <Provider store={store}>
+        <Form />
+      </Provider>
     );
+
     const input = screen.getByPlaceholderText('Please enter new task...');
 
     expect(input).toBeInTheDocument();
@@ -99,9 +96,9 @@ describe('Form', () => {
 
   it('should be empty data in input', () => {
     render(
-      // <Provider store={store}>
-      <Form />
-      // </Provider>
+      <Provider store={store}>
+        <Form />
+      </Provider>
     );
     const input = screen.getByPlaceholderText('Please enter new task...');
 
@@ -109,25 +106,21 @@ describe('Form', () => {
   });
 
   it('should be filled text of "todo one" in input', () => {
-    render(
-      // <Provider store={store}>
-      <Form />
-      // </Provider>
-    );
+    useDispatch.mockReturnValue(dispatch);
+    render(<Form />);
     const input = screen.getByPlaceholderText('Please enter new task...');
-    // fireEvent.change(input, { target: { value: 'todo one' } });
-    const mockInputChange = jest.spyOn(actions, 'INPUT_CHANGE');
-    mockUseDispatch.mockReturnValue('todo one');
+    fireEvent.change(input, { target: { value: 'todo one' } });
 
     expect(input.value).toBe('todo one');
   });
 
   // it('should be added new todo item to the list', () => {
+  //   mockUseSelector.mockReturnValue(myTask);
+
   //   render(
   //     <Provider store={store}>
   //       <App>
-  //         <Form />
-  //         <Todo myTask={myTask} />
+  //         <Form myTask={myTask}></Form>
   //       </App>
   //     </Provider>
   //   );
