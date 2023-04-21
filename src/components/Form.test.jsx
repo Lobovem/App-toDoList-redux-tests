@@ -26,7 +26,6 @@ let MyTask = [
 ];
 
 const dispatch = jest.fn();
-const useSel = jest.fn();
 
 const mockUseSelector = jest.spyOn(reduxHooks, 'useSelector');
 const mockUseDispatch = jest.spyOn(reduxHooks, 'useDispatch');
@@ -55,7 +54,6 @@ describe('Form', () => {
     expect(btn).toBeInTheDocument();
   });
 
-  //TODO Does work this test correctly? I need to check it
   it('should be one click button of Remove checked', () => {
     const handleClick = jest.fn();
 
@@ -107,12 +105,61 @@ describe('Form', () => {
 
   it('should be filled text of "todo one" in input', () => {
     useDispatch.mockReturnValue(dispatch);
-    render(<Form />);
+
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
+
     const input = screen.getByPlaceholderText('Please enter new task...');
     fireEvent.change(input, { target: { value: 'todo one' } });
 
     expect(input.value).toBe('todo one');
   });
+
+  //onsubmit
+  it('should be click onSubmit', () => {
+    useDispatch.mockReturnValue(dispatch);
+
+    const handleSubmit = jest.fn();
+
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
+
+    const input = screen.getByPlaceholderText('Please enter new task...');
+    fireEvent.change(input, { target: { value: 'todo one' } });
+
+    const btn = screen.getByRole('button', { name: '+' });
+    expect(btn).toBeInTheDocument();
+    expect(handleSubmit).toHaveBeenCalledTimes(0);
+
+    fireEvent.click(btn);
+    expect(handleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  //check submit
+  // it('should be called dispatch with ADD_TODO', () => {
+  //   useDispatch.mockReturnValue(dispatch);
+
+  //   render(
+  //     <Provider store={store}>
+  //       <Form />
+  //     </Provider>
+  //   );
+
+  //   const input = screen.getByPlaceholderText('Please enter new task...');
+  //   fireEvent.change(input, { target: { value: 'todo two' } });
+
+  //   const btn = screen.getByRole('button', { name: '+' });
+  //   fireEvent.click(btn);
+
+  //   expect(dispatch).toHaveBeenCalledWith({ type: 'ADD_TODO', payload: 'todo two' });
+  //   expect(dispatch).toHaveBeenCalledWith({ type: 'INPUT_CHANGE', payload: '' });
+  // });
 
   // it('should be added new todo item to the list', () => {
   //   mockUseSelector.mockReturnValue(myTask);

@@ -6,6 +6,28 @@ import { store } from '../store';
 import myTask from '../App';
 import React from 'react';
 import App from '../App';
+import * as reduxHooks from 'react-redux';
+
+jest.mock('react-redux', () => ({
+  ...jest.requireActual('react-redux'),
+  useDispatch: jest.fn(),
+  useSelector: jest.fn(),
+}));
+
+let todo = [
+  {
+    id: 1,
+    task: 'todo one',
+    complete: false,
+    isEditing: false,
+  },
+];
+
+const dispatch = jest.fn();
+const useSel = jest.fn();
+
+const mockUseSelector = jest.spyOn(reduxHooks, 'useSelector');
+const mockUseDispatch = jest.spyOn(reduxHooks, 'useDispatch');
 
 describe('TodoList', () => {
   it('should be maked snapshop Todo', () => {
@@ -44,4 +66,22 @@ describe('TodoList', () => {
 
     expect(btn).toBeInTheDocument();
   });
+
+  // it('should clear the input when a todo is added', () => {
+  //   let todo = {
+  //     id: 1,
+  //     task: 'todo one',
+  //     complete: false,
+  //     isEditing: true,
+  //   };
+
+  //   render(
+  //     <Provider store={store}>
+  //       <Todo todo={todo} />
+  //     </Provider>
+  //   );
+
+  //   const input = screen.getByRole('textbox');
+  //   expect(input).toBeInTheDocument();
+  // });
 });
