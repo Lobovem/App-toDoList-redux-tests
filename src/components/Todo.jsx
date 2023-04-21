@@ -27,6 +27,7 @@ export function Todo({ myTask }) {
 
           <input
             className={s.todo__taskEdit}
+            aria-label="Editing"
             type="text"
             value={myTask.task}
             onChange={(e) => dispatch({ type: 'EDIT_TODO', payload: { myTask, todoTitle: e.target.value } })}

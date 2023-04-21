@@ -32,7 +32,6 @@ const mockUseDispatch = jest.spyOn(reduxHooks, 'useDispatch');
 
 describe('Form', () => {
   it('should be maked snapshot Form', () => {
-    // mockUseSelector.mockReturnValue([]);
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
       <Provider store={store}>
@@ -43,52 +42,13 @@ describe('Form', () => {
     expect(component).toMatchSnapshot();
   });
 
-  it('should search button of Remove checked', () => {
-    render(
-      <Provider store={store}>
-        <Form />
-      </Provider>
-    );
-    const btn = screen.getByRole('button', { name: 'Remove checked' });
-
-    expect(btn).toBeInTheDocument();
-  });
-
-  it('should be one click button of Remove checked', () => {
-    const handleClick = jest.fn();
-
-    render(
-      <Provider store={store}>
-        <Form onClick={handleClick} />
-      </Provider>
-    );
-
-    const btn = screen.getByRole('button', { name: 'Remove checked' });
-    handleClick(btn);
-
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  it('should search button of add todo', () => {
-    render(
-      <Provider store={store}>
-        <Form />
-      </Provider>
-    );
-    const btn = screen.getByRole('button', { name: '+' });
-
-    expect(btn).toBeInTheDocument();
-  });
-
   it('should search input', () => {
     render(
       <Provider store={store}>
         <Form />
       </Provider>
     );
-
     const input = screen.getByPlaceholderText('Please enter new task...');
-
     expect(input).toBeInTheDocument();
   });
 
@@ -98,8 +58,8 @@ describe('Form', () => {
         <Form />
       </Provider>
     );
-    const input = screen.getByPlaceholderText('Please enter new task...');
 
+    const input = screen.getByPlaceholderText('Please enter new task...');
     expect(input.value).toBe('');
   });
 
@@ -114,14 +74,23 @@ describe('Form', () => {
 
     const input = screen.getByPlaceholderText('Please enter new task...');
     fireEvent.change(input, { target: { value: 'todo one' } });
-
     expect(input.value).toBe('todo one');
+  });
+
+  it('should search button of add todo', () => {
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
+
+    const btn = screen.getByRole('button', { name: '+' });
+    expect(btn).toBeInTheDocument();
   });
 
   //onsubmit
   it('should be click onSubmit', () => {
     useDispatch.mockReturnValue(dispatch);
-
     const handleSubmit = jest.fn();
 
     render(
@@ -137,8 +106,33 @@ describe('Form', () => {
     expect(btn).toBeInTheDocument();
     expect(handleSubmit).toHaveBeenCalledTimes(0);
 
-    fireEvent.click(btn);
+    handleSubmit(btn);
     expect(handleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  it('should search button of Remove checked', () => {
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
+
+    const btn = screen.getByRole('button', { name: 'Remove checked' });
+    expect(btn).toBeInTheDocument();
+  });
+
+  it('should be one click button of Remove checked', () => {
+    const handleClick = jest.fn();
+
+    render(
+      <Provider store={store}>
+        <Form onClick={handleClick} />
+      </Provider>
+    );
+
+    const btn = screen.getByRole('button', { name: 'Remove checked' });
+    handleClick(btn);
+    expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
   //check submit
@@ -162,13 +156,20 @@ describe('Form', () => {
   // });
 
   // it('should be added new todo item to the list', () => {
-  //   mockUseSelector.mockReturnValue(myTask);
+  //   // mockUseSelector.mockReturnValue(myTask);
+
+  //   let myTask = [
+  //     {
+  //       id: 1,
+  //       task: 'todo one',
+  //       complete: false,
+  //       isEditing: false,
+  //     },
+  //   ];
 
   //   render(
   //     <Provider store={store}>
-  //       <App>
-  //         <Form myTask={myTask}></Form>
-  //       </App>
+  //       <App>{/* <Form myTask={myTask}></Form> */}</App>
   //     </Provider>
   //   );
 
