@@ -1,9 +1,10 @@
 import { useDispatch, useSelector } from 'react-redux';
 import s from './style.module.scss';
+import { add_todo, delete_all_complete_todo, input_change, userInputSelector } from '../store/reducer';
 
 export function Form() {
   const dispatch = useDispatch();
-  const userInput = useSelector((state) => state.todoListReduser.inputState);
+  const userInput = useSelector(userInputSelector);
 
   return (
     <div>
@@ -11,8 +12,8 @@ export function Form() {
         className={s.todo__formWrap}
         onSubmit={(e) => {
           e.preventDefault();
-          dispatch({ type: 'ADD_TODO', payload: userInput });
-          dispatch({ type: 'INPUT_CHANGE', payload: '' });
+          dispatch(add_todo(userInput));
+          dispatch(input_change(''));
         }}
       >
         <input
@@ -21,12 +22,12 @@ export function Form() {
           placeholder="Please enter new task..."
           name="input"
           value={userInput}
-          onChange={(e) => dispatch({ type: 'INPUT_CHANGE', payload: e.target.value })}
+          onChange={(e) => dispatch(input_change(e.target.value))}
         />
         <button className={s.todo__add}>+</button>
       </form>
 
-      <button className={s.todo__delAll} onClick={() => dispatch({ type: 'DELETE_ALL_COMPLETE_TODO' })}>
+      <button className={s.todo__delAll} onClick={() => dispatch(delete_all_complete_todo())}>
         Remove checked
       </button>
     </div>

@@ -74,3 +74,35 @@ export const todoListReduser = (state = defaultState, action) => {
       return state;
   }
 };
+
+//action creators
+export function add_todo(userInput) {
+  return { type: 'ADD_TODO', payload: userInput };
+}
+
+export function input_change(item) {
+  return { type: 'INPUT_CHANGE', payload: item };
+}
+
+export function delete_all_complete_todo() {
+  return { type: 'DELETE_ALL_COMPLETE_TODO' };
+}
+
+export function set_change_edit_mode(myTask) {
+  return { type: 'SET_CHANGE_EDIT_MODE', payload: myTask };
+}
+
+export function edit_todo(myTask, e) {
+  return { type: 'EDIT_TODO', payload: myTask, todoTitle: e };
+}
+
+export function handle_check(myTask) {
+  return { type: 'HANDLE_CHECK', payload: myTask };
+}
+
+export function delete_todo(myTask) {
+  return { type: 'DELETE_TODO', payload: myTask };
+}
+
+//userInputSelector
+export const userInputSelector = (state) => state.todoListReduser.inputState;

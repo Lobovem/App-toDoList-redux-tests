@@ -1,5 +1,6 @@
 import { useDispatch } from 'react-redux';
 import s from './style.module.scss';
+import { delete_todo, edit_todo, handle_check, set_change_edit_mode } from '../store/reducer';
 
 export function Todo({ myTask }) {
   const dispatch = useDispatch();
@@ -10,7 +11,7 @@ export function Todo({ myTask }) {
         role="button"
         className={s.todo__btnEdit}
         onClick={() => {
-          dispatch({ type: 'SET_CHANGE_EDIT_MODE', payload: myTask });
+          dispatch(set_change_edit_mode(myTask));
         }}
       >
         Edit
@@ -20,7 +21,7 @@ export function Todo({ myTask }) {
         <form
           onSubmit={(e) => {
             e.preventDefault();
-            dispatch({ type: 'SET_CHANGE_EDIT_MODE', payload: myTask });
+            dispatch(set_change_edit_mode(myTask));
           }}
         >
           <button className={s.todo__btnApply}>Apply</button>
@@ -37,19 +38,12 @@ export function Todo({ myTask }) {
 
       {!myTask.isEditing && (
         <div className={myTask.complete ? `${s.todo__task} ${s.todo__task_complete}` : s.todo__task}>
-          <input
-            className={s.todo__checkbox}
-            type="checkbox"
-            name=""
-            id=""
-            defaultChecked={myTask.complete}
-            onClick={() => dispatch({ type: 'HANDLE_CHECK', payload: myTask })}
-          />
+          <input className={s.todo__checkbox} type="checkbox" name="" id="" defaultChecked={myTask.complete} onClick={() => dispatch(handle_check(myTask))} />
           {myTask.task}
         </div>
       )}
 
-      <div role="button" className={s.todo__del} onClick={() => dispatch({ type: 'DELETE_TODO', payload: myTask })}>
+      <div role="button" className={s.todo__del} onClick={() => dispatch(delete_todo(myTask))}>
         X
       </div>
     </div>
