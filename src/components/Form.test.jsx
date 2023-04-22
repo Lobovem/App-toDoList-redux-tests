@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Provider } from 'react-redux';
 import { Form } from './Form';
 import { store } from '../store';
@@ -142,5 +142,32 @@ describe('Form', () => {
     dispatch(btn);
 
     expect(dispatch).toHaveBeenCalledTimes(2);
+  });
+
+  //add todo
+  it('should be add todo', () => {
+    const todo = { id: 1, task: 'todo new', complete: false, isEditing: false };
+    useDispatch.mockReturnValue(dispatch);
+    useSelector.mockReturnValue(todo);
+
+    render(
+      <Provider store={store}>
+        <Form></Form>
+      </Provider>
+    );
+
+    const btnAdd = screen.getByRole('button', { name: '+' });
+    expect(btnAdd).toBeInTheDocument();
+
+    const input = screen.getByPlaceholderText('Please enter new task...');
+    expect(input).toBeInTheDocument();
+
+    fireEvent.click(btnAdd);
+    // expect(dispatch).toHaveBeenCalledTimes(2);
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'todoList/add_todo',
+      payload: todo,
+    });
+    screen.debug();
   });
 });

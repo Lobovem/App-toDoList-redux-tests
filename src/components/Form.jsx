@@ -13,7 +13,7 @@ export function Form() {
         onSubmit={(e) => {
           e.preventDefault();
           dispatch(add_todo(userInput));
-          dispatch(input_change(''));
+          // dispatch(input_change(''));
         }}
       >
         <input
