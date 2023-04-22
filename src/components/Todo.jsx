@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import s from './style.module.scss';
-import { delete_todo, handle_check, set_change_edit_mode } from '../store/reducer';
+import { delete_todo, edit_todo, handle_check, set_change_edit_mode } from '../store/reducer';
 
 export function Todo({ myTask }) {
   const dispatch = useDispatch();
@@ -31,7 +31,7 @@ export function Todo({ myTask }) {
             aria-label="Editing"
             type="text"
             value={myTask.task}
-            onChange={(e) => dispatch({ type: 'EDIT_TODO', payload: { myTask, todoTitle: e.target.value } })}
+            onChange={(e) => dispatch(edit_todo({ myTask, todoTitle: e.target.value }))}
           />
         </form>
       )}

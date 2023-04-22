@@ -8,7 +8,6 @@ import { todoListSelector } from './store/reducer';
 
 function App() {
   const todoList = useSelector(todoListSelector);
-  console.log('todoList', todoList);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(todoList));
