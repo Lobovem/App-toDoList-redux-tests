@@ -26,7 +26,7 @@ export const counterSlice = createSlice({
     },
 
     input_change: (state, action) => {
-      state.todoListState = action.payload;
+      state.inputState = action.payload;
     },
 
     set_change_edit_mode: (state, action) => {

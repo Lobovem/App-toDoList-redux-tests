@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux';
 import s from './style.module.scss';
-import { delete_todo, edit_todo, handle_check, set_change_edit_mode } from '../store/reducer';
+import { delete_todo, handle_check, set_change_edit_mode } from '../store/reducer';
 
 export function Todo({ myTask }) {
   const dispatch = useDispatch();
