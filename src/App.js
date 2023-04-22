@@ -4,9 +4,11 @@ import { Todo } from './components/Todo';
 import { useSelector } from 'react-redux';
 import s from './components/style.module.scss';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
+import { todoListSelector } from './store/reducer';
 
 function App() {
-  const todoList = useSelector((state) => state.todoListReduser.todoListState);
+  const todoList = useSelector(todoListSelector);
+  console.log('todoList', todoList);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(todoList));
