@@ -1,4 +1,4 @@
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Todo } from './Todo';
 import { store } from '../store';
@@ -10,9 +10,13 @@ jest.mock('react-redux', () => ({
   useDispatch: jest.fn(),
 }));
 
-const dispatch = jest.fn();
-
 describe('TodoList', () => {
+  const dispatch = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   //snapshot component
   it('should be maked snapshop Todo', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -27,7 +31,6 @@ describe('TodoList', () => {
 
   //searching button edit
   it('should be searched button of edit', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention
     render(
       <Provider store={store}>
         <Todo myTask={myTask} />
@@ -38,9 +41,40 @@ describe('TodoList', () => {
     expect(btn).toBeInTheDocument();
   });
 
+  //edit todo
+  it('should be edited todo', () => {
+    useDispatch.mockReturnValue(dispatch);
+
+    const todo = {
+      id: 1,
+      task: 'todo one',
+      complete: false,
+      isEditing: true,
+    };
+
+    render(
+      <Provider store={store}>
+        <Todo myTask={todo} />
+      </Provider>
+    );
+
+    const btnApply = screen.getByRole('button', { name: 'Apply' });
+    expect(btnApply).toBeInTheDocument();
+
+    const editingInput = screen.getByLabelText('Editing');
+    expect(editingInput).toBeInTheDocument();
+
+    fireEvent.change(editingInput, { target: { value: 'todo new' } });
+    fireEvent.click(btnApply);
+
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'todoList/set_change_edit_mode',
+      payload: todo,
+    });
+  });
+
   //searching button delete
   it('should be searched button of delete', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention
     render(
       <Provider store={store}>
         <Todo myTask={myTask} />
@@ -53,6 +87,8 @@ describe('TodoList', () => {
 
   //delete todo
   it('should be deleted todo after press btn delete', () => {
+    useDispatch.mockReturnValue(dispatch);
+
     const todo = {
       id: 1,
       task: 'todo one',
@@ -69,18 +105,15 @@ describe('TodoList', () => {
     const btnDel = screen.getByRole('button', { name: 'X' });
     expect(btnDel).toBeInTheDocument();
 
-    dispatch(btnDel);
+    fireEvent.click(btnDel);
     expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledWith({ type: 'todoList/delete_todo', payload: todo });
   });
 
-  //edit todo
-  it('should be edited todo', () => {
-    const todo = {
-      id: 1,
-      task: 'todo one',
-      complete: false,
-      isEditing: true,
-    };
+  //completed todo after click checkbox, dispatch hadle_check after click checkbox
+  it('should be completed todo, dispatch hadle_check after click checkbox', () => {
+    const todo = { task: 'todo', complete: false, isEditing: false };
+    useDispatch.mockReturnValue(dispatch);
 
     render(
       <Provider store={store}>
@@ -88,33 +121,22 @@ describe('TodoList', () => {
       </Provider>
     );
 
-    const btnEdit = screen.getByRole('button', { name: 'Edit' });
-    expect(btnEdit).toBeInTheDocument();
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeInTheDocument();
 
-    const editingInput = screen.getByLabelText('Editing');
-    expect(editingInput).toBeInTheDocument();
-
-    fireEvent.change(editingInput, { target: { value: todo.task } });
-    expect(editingInput.value).toBe('todo one');
-
-    const ubdatedTodo = {
-      ...todo,
-      task: 'todo edited',
-      isEditing: false,
-    };
-
-    expect(ubdatedTodo).toEqual({
-      id: 1,
-      task: 'todo edited',
-      complete: false,
-      isEditing: false,
+    fireEvent.click(checkbox);
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(checkbox).toBeChecked();
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'todoList/handle_check',
+      payload: todo,
     });
   });
 
-  //complete todo
-  it('should be complete todo', () => {
-    const onClick = jest.fn();
-    const todo = { id: 1, task: 'todo', complete: true, isEditing: false };
+  //not completed todo after click checkbox, dispatch hadle_check after click checkbox
+  it('should be not completed todo, dispatch hadle_check after click checkbox', () => {
+    const todo = { task: 'todo', complete: true, isEditing: false };
+    useDispatch.mockReturnValue(dispatch);
 
     render(
       <Provider store={store}>
@@ -125,27 +147,12 @@ describe('TodoList', () => {
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toBeInTheDocument();
 
-    onClick(checkbox);
-    expect(onClick).toHaveBeenCalledTimes(1);
-    expect(checkbox).toBeChecked();
-  });
-
-  //not complete todo
-  it('should be not complete todo', () => {
-    const onClick = jest.fn();
-    const todo = { id: 1, task: 'todo', complete: false, isEditing: false };
-
-    render(
-      <Provider store={store}>
-        <Todo myTask={todo} />
-      </Provider>
-    );
-
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toBeInTheDocument();
-
-    onClick(checkbox);
-    expect(onClick).toHaveBeenCalledTimes(1);
+    fireEvent.click(checkbox);
+    expect(dispatch).toHaveBeenCalledTimes(1);
     expect(checkbox).not.toBeChecked();
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'todoList/handle_check',
+      payload: todo,
+    });
   });
 });
