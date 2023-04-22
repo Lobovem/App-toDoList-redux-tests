@@ -1,18 +1,24 @@
-import { Provider } from 'react-redux';
+import { Provider, useDispatch } from 'react-redux';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { Todo } from './Todo';
 import { store } from '../store';
 import myTask from '../App';
 import React from 'react';
+import App from '../App';
+import { Form } from './Form';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
   useDispatch: jest.fn(),
 }));
 
-const dispatch = jest.fn();
-
 describe('TodoList', () => {
+  const dispatch = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
   //snapshot component
   it('should be maked snapshop Todo', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -25,9 +31,26 @@ describe('TodoList', () => {
     expect(component).toMatchSnapshot();
   });
 
+  //rendering new todo and check it on screen
+  it('should be rendering new todo and check it on screen', () => {
+    const todo = {
+      id: Math.random(),
+      task: 'todo one',
+      complete: false,
+      isEditing: false,
+    };
+
+    render(
+      <Provider store={store}>
+        <Todo myTask={todo} />
+      </Provider>
+    );
+
+    expect(screen.getByText('todo one')).toBeInTheDocument();
+  });
+
   //searching button edit
-  it('should be searched button of edit', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention
+  it('should be searched button edit', () => {
     render(
       <Provider store={store}>
         <Todo myTask={myTask} />
@@ -38,9 +61,40 @@ describe('TodoList', () => {
     expect(btn).toBeInTheDocument();
   });
 
+  //edit todo (option)
+  it('should be edited todo (option)', () => {
+    useDispatch.mockReturnValue(dispatch);
+
+    const todo = {
+      id: 1,
+      task: 'todo one',
+      complete: false,
+      isEditing: true,
+    };
+
+    render(
+      <Provider store={store}>
+        <Todo myTask={todo} />
+      </Provider>
+    );
+
+    const btnApply = screen.getByRole('button', { name: 'Apply' });
+    expect(btnApply).toBeInTheDocument();
+
+    const editingInput = screen.getByLabelText('Editing');
+    expect(editingInput).toBeInTheDocument();
+
+    fireEvent.change(editingInput, { target: { value: 'todo new' } });
+    fireEvent.click(btnApply);
+
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'SET_CHANGE_EDIT_MODE',
+      payload: todo,
+    });
+  });
+
   //searching button delete
-  it('should be searched button of delete', () => {
-    // eslint-disable-next-line testing-library/render-result-naming-convention
+  it('should be searched button delete', () => {
     render(
       <Provider store={store}>
         <Todo myTask={myTask} />
@@ -53,11 +107,13 @@ describe('TodoList', () => {
 
   //delete todo
   it('should be deleted todo after press btn delete', () => {
+    useDispatch.mockReturnValue(dispatch);
+
     const todo = {
       id: 1,
       task: 'todo one',
       complete: false,
-      isEditing: true,
+      isEditing: false,
     };
 
     render(
@@ -69,18 +125,20 @@ describe('TodoList', () => {
     const btnDel = screen.getByRole('button', { name: 'X' });
     expect(btnDel).toBeInTheDocument();
 
-    dispatch(btnDel);
+    fireEvent.click(btnDel);
     expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledWith({ type: 'DELETE_TODO', payload: todo });
   });
 
-  //edit todo
-  it('should be edited todo', () => {
+  //completed todo after click checkbox
+  it('should be completed todo after click checkbox', () => {
     const todo = {
       id: 1,
       task: 'todo one',
       complete: false,
-      isEditing: true,
+      isEditing: false,
     };
+    useDispatch.mockReturnValue(dispatch);
 
     render(
       <Provider store={store}>
@@ -88,33 +146,27 @@ describe('TodoList', () => {
       </Provider>
     );
 
-    const btnEdit = screen.getByRole('button', { name: 'Edit' });
-    expect(btnEdit).toBeInTheDocument();
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeInTheDocument();
 
-    const editingInput = screen.getByLabelText('Editing');
-    expect(editingInput).toBeInTheDocument();
-
-    fireEvent.change(editingInput, { target: { value: todo.task } });
-    expect(editingInput.value).toBe('todo one');
-
-    const ubdatedTodo = {
-      ...todo,
-      task: 'todo edited',
-      isEditing: false,
-    };
-
-    expect(ubdatedTodo).toEqual({
-      id: 1,
-      task: 'todo edited',
-      complete: false,
-      isEditing: false,
+    fireEvent.click(checkbox);
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(checkbox).toBeChecked();
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'HANDLE_CHECK',
+      payload: todo,
     });
   });
 
-  //complete todo
-  it('should be complete todo', () => {
-    const onClick = jest.fn();
-    const todo = { id: 1, task: 'todo', complete: true, isEditing: false };
+  //not completed todo after click checkbox
+  it('should be not completed todo after click checkbox', () => {
+    const todo = {
+      id: 1,
+      task: 'todo one',
+      complete: true,
+      isEditing: false,
+    };
+    useDispatch.mockReturnValue(dispatch);
 
     render(
       <Provider store={store}>
@@ -125,27 +177,12 @@ describe('TodoList', () => {
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toBeInTheDocument();
 
-    onClick(checkbox);
-    expect(onClick).toHaveBeenCalledTimes(1);
-    expect(checkbox).toBeChecked();
-  });
-
-  //not complete todo
-  it('should be not complete todo', () => {
-    const onClick = jest.fn();
-    const todo = { id: 1, task: 'todo', complete: false, isEditing: false };
-
-    render(
-      <Provider store={store}>
-        <Todo myTask={todo} />
-      </Provider>
-    );
-
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toBeInTheDocument();
-
-    onClick(checkbox);
-    expect(onClick).toHaveBeenCalledTimes(1);
+    fireEvent.click(checkbox);
+    expect(dispatch).toHaveBeenCalledTimes(1);
     expect(checkbox).not.toBeChecked();
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'HANDLE_CHECK',
+      payload: todo,
+    });
   });
 });

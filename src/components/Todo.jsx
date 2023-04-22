@@ -31,7 +31,7 @@ export function Todo({ myTask }) {
             aria-label="Editing"
             type="text"
             value={myTask.task}
-            onChange={(e) => dispatch({ type: 'EDIT_TODO', payload: { myTask, todoTitle: e.target.value } })}
+            onChange={(e) => dispatch(edit_todo({ myTask, todoTitle: e.target.value }))}
           />
         </form>
       )}
