@@ -16,8 +16,9 @@ describe('Form', () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
+
   //snapshot component
-  it('should be maked snapshot Form', () => {
+  it('should be maked snapshot conponent of Form', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
     const component = render(
       <Provider store={store}>
@@ -29,7 +30,7 @@ describe('Form', () => {
   });
 
   //search input
-  it('should search input', () => {
+  it('should be searched input for new todo', () => {
     render(
       <Provider store={store}>
         <Form />
@@ -40,7 +41,7 @@ describe('Form', () => {
   });
 
   //empty input
-  it('should be empty data in input', () => {
+  it('should be  empty data in input default', () => {
     render(
       <Provider store={store}>
         <Form />
@@ -67,7 +68,7 @@ describe('Form', () => {
   });
 
   //search button add
-  it('should search button of add todo', () => {
+  it('should be searched button of add todo', () => {
     render(
       <Provider store={store}>
         <Form />
@@ -78,10 +79,20 @@ describe('Form', () => {
     expect(btn).toBeInTheDocument();
   });
 
-  //onclick onsubmit
-  it('should be click onSubmit', () => {
+  it('should be searched button of Remove checked', () => {
+    render(
+      <Provider store={store}>
+        <Form />
+      </Provider>
+    );
+
+    const btn = screen.getByRole('button', { name: 'Remove checked' });
+    expect(btn).toBeInTheDocument();
+  });
+
+  //onclick remove checked and delete all complete todo
+  it('should be one click button of Remove checked and delete delete all complete todo', () => {
     useDispatch.mockReturnValue(dispatch);
-    const handleSubmit = jest.fn();
 
     render(
       <Provider store={store}>
@@ -89,52 +100,28 @@ describe('Form', () => {
       </Provider>
     );
 
-    const input = screen.getByPlaceholderText('Please enter new task...');
-    fireEvent.change(input, { target: { value: 'todo one' } });
-
-    const btn = screen.getByRole('button', { name: '+' });
-    expect(btn).toBeInTheDocument();
-    expect(handleSubmit).toHaveBeenCalledTimes(0);
-
-    handleSubmit(btn);
-    expect(handleSubmit).toHaveBeenCalledTimes(1);
-  });
-
-  it('should search button of Remove checked', () => {
-    render(
-      <Provider store={store}>
-        <Form />
-      </Provider>
-    );
-
     const btn = screen.getByRole('button', { name: 'Remove checked' });
-    expect(btn).toBeInTheDocument();
+    fireEvent.click(btn);
+    expect(dispatch).toHaveBeenCalledTimes(1);
+    expect(dispatch).toHaveBeenCalledWith({
+      type: 'todoList/delete_all_complete_todo',
+    });
   });
 
-  //onclick remove checked
-  it('should be one click button of Remove checked', () => {
-    const handleClick = jest.fn();
-
-    render(
-      <Provider store={store}>
-        <Form onClick={handleClick} />
-      </Provider>
-    );
-
-    const btn = screen.getByRole('button', { name: 'Remove checked' });
-    handleClick(btn);
-    expect(handleClick).toHaveBeenCalledTimes(1);
-  });
-
-  //add todo
-  it('should be added todo', () => {
-    const todo = { id: 1, task: 'todo new', complete: false, isEditing: false };
+  //add new todo
+  it('should be added new todo', () => {
+    const todo = {
+      id: 1,
+      task: 'todo new',
+      complete: false,
+      isEditing: false,
+    };
     useDispatch.mockReturnValue(dispatch);
     useSelector.mockReturnValue(todo);
 
     render(
       <Provider store={store}>
-        <Form></Form>
+        <Form />
       </Provider>
     );
 
