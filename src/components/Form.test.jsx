@@ -10,9 +10,12 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(),
 }));
 
-const dispatch = jest.fn();
-
 describe('Form', () => {
+  const dispatch = jest.fn();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
   //snapshot component
   it('should be maked snapshot Form', () => {
     // eslint-disable-next-line testing-library/render-result-naming-convention
@@ -123,29 +126,8 @@ describe('Form', () => {
     expect(handleClick).toHaveBeenCalledTimes(1);
   });
 
-  // check (click) submit
-  it('should be called dispatch with ADD_TODO', () => {
-    useDispatch.mockReturnValue(dispatch);
-
-    render(
-      <Provider store={store}>
-        <Form />
-      </Provider>
-    );
-
-    const input = screen.getByPlaceholderText('Please enter new task...');
-    fireEvent.change(input, { target: { value: 'todo two' } });
-
-    expect(input.value).toBe('todo two');
-
-    const btn = screen.getByRole('button', { name: '+' });
-    dispatch(btn);
-
-    expect(dispatch).toHaveBeenCalledTimes(2);
-  });
-
   //add todo
-  it('should be add todo', () => {
+  it('should be added todo', () => {
     const todo = { id: 1, task: 'todo new', complete: false, isEditing: false };
     useDispatch.mockReturnValue(dispatch);
     useSelector.mockReturnValue(todo);
@@ -163,11 +145,10 @@ describe('Form', () => {
     expect(input).toBeInTheDocument();
 
     fireEvent.click(btnAdd);
-    // expect(dispatch).toHaveBeenCalledTimes(2);
+
     expect(dispatch).toHaveBeenCalledWith({
       type: 'todoList/add_todo',
       payload: todo,
     });
-    screen.debug();
   });
 });

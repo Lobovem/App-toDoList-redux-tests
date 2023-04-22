@@ -4,6 +4,8 @@ import { Todo } from './Todo';
 import { store } from '../store';
 import myTask from '../App';
 import React from 'react';
+import App from '../App';
+import { Form } from './Form';
 
 jest.mock('react-redux', () => ({
   ...jest.requireActual('react-redux'),
@@ -29,8 +31,26 @@ describe('TodoList', () => {
     expect(component).toMatchSnapshot();
   });
 
+  //rendering new todo and check it on screen
+  it('should be rendering new todo and check it on screen', () => {
+    const todo = {
+      id: Math.random(),
+      task: 'todo one',
+      complete: false,
+      isEditing: false,
+    };
+
+    render(
+      <Provider store={store}>
+        <Todo myTask={todo} />
+      </Provider>
+    );
+
+    expect(screen.getByText('todo one')).toBeInTheDocument();
+  });
+
   //searching button edit
-  it('should be searched button of edit', () => {
+  it('should be searched button edit', () => {
     render(
       <Provider store={store}>
         <Todo myTask={myTask} />
@@ -41,8 +61,8 @@ describe('TodoList', () => {
     expect(btn).toBeInTheDocument();
   });
 
-  //edit todo
-  it('should be edited todo', () => {
+  //edit todo (option)
+  it('should be edited todo (option)', () => {
     useDispatch.mockReturnValue(dispatch);
 
     const todo = {
@@ -74,7 +94,7 @@ describe('TodoList', () => {
   });
 
   //searching button delete
-  it('should be searched button of delete', () => {
+  it('should be searched button delete', () => {
     render(
       <Provider store={store}>
         <Todo myTask={myTask} />
@@ -93,7 +113,7 @@ describe('TodoList', () => {
       id: 1,
       task: 'todo one',
       complete: false,
-      isEditing: true,
+      isEditing: false,
     };
 
     render(
@@ -110,9 +130,14 @@ describe('TodoList', () => {
     expect(dispatch).toHaveBeenCalledWith({ type: 'todoList/delete_todo', payload: todo });
   });
 
-  //completed todo after click checkbox, dispatch hadle_check after click checkbox
-  it('should be completed todo, dispatch hadle_check after click checkbox', () => {
-    const todo = { task: 'todo', complete: false, isEditing: false };
+  //completed todo after click checkbox
+  it('should be completed todo after click checkbox', () => {
+    const todo = {
+      id: 1,
+      task: 'todo one',
+      complete: false,
+      isEditing: false,
+    };
     useDispatch.mockReturnValue(dispatch);
 
     render(
@@ -133,9 +158,14 @@ describe('TodoList', () => {
     });
   });
 
-  //not completed todo after click checkbox, dispatch hadle_check after click checkbox
-  it('should be not completed todo, dispatch hadle_check after click checkbox', () => {
-    const todo = { task: 'todo', complete: true, isEditing: false };
+  //not completed todo after click checkbox
+  it('should be not completed todo after click checkbox', () => {
+    const todo = {
+      id: 1,
+      task: 'todo one',
+      complete: true,
+      isEditing: false,
+    };
     useDispatch.mockReturnValue(dispatch);
 
     render(
